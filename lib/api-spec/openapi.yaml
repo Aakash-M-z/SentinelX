@@ -3,20 +3,38 @@ info:
   # Do not change the title, if the title changes, the import paths will be broken
   title: Api
   version: 0.1.0
-  description: API specification
+  description: SentinelX – Autonomous AI Red Team vs Blue Team Cyber Range API
 servers:
   - url: /api
     description: Base API path
 tags:
   - name: health
     description: Health operations
+  - name: simulation
+    description: Simulation control
+  - name: red-team
+    description: AI Red Team operations
+  - name: blue-team
+    description: AI Blue Team operations
+  - name: commander
+    description: AI Security Commander
+  - name: incidents
+    description: Incident Response Center
+  - name: assets
+    description: Cyber Range Assets
+  - name: threats
+    description: Threat Intelligence
+  - name: soc
+    description: SOC Dashboard
+  - name: copilot
+    description: Security Copilot chat
+
 paths:
   /healthz:
     get:
       operationId: healthCheck
       tags: [health]
       summary: Health check
-      description: Returns server health status
       responses:
         "200":
           description: Healthy
@@ -24,13 +42,1529 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/HealthStatus"
+
+  # ── Simulation ────────────────────────────────────────────────────────────────
+  /simulation/status:
+    get:
+      operationId: getSimulationStatus
+      tags: [simulation]
+      summary: Get current simulation state
+      responses:
+        "200":
+          description: Current simulation status
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SimulationStatus"
+
+  /simulation/start:
+    post:
+      operationId: startSimulation
+      tags: [simulation]
+      summary: Start a new simulation run
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SimulationConfig"
+      responses:
+        "200":
+          description: Simulation started
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SimulationStatus"
+
+  /simulation/stop:
+    post:
+      operationId: stopSimulation
+      tags: [simulation]
+      summary: Stop the running simulation
+      responses:
+        "200":
+          description: Simulation stopped
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SimulationStatus"
+
+  /simulation/reset:
+    post:
+      operationId: resetSimulation
+      tags: [simulation]
+      summary: Reset simulation to initial state
+      responses:
+        "200":
+          description: Simulation reset
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SimulationStatus"
+
+  /simulation/events:
+    get:
+      operationId: listSimulationEvents
+      tags: [simulation]
+      summary: List all simulation events (attack timeline)
+      parameters:
+        - in: query
+          name: limit
+          schema:
+            type: integer
+            default: 50
+        - in: query
+          name: type
+          schema:
+            type: ["string", "null"]
+      responses:
+        "200":
+          description: List of events
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/SimulationEvent"
+
+  /simulation/metrics:
+    get:
+      operationId: getSimulationMetrics
+      tags: [simulation]
+      summary: Aggregate metrics for current simulation
+      responses:
+        "200":
+          description: Simulation metrics
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SimulationMetrics"
+
+  # ── Red Team ──────────────────────────────────────────────────────────────────
+  /red-team/status:
+    get:
+      operationId: getRedTeamStatus
+      tags: [red-team]
+      summary: Get Red Team agent status and current objective
+      responses:
+        "200":
+          description: Red Team status
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AgentStatus"
+
+  /red-team/attacks:
+    get:
+      operationId: listAttacks
+      tags: [red-team]
+      summary: List all attack actions performed
+      responses:
+        "200":
+          description: Attack list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/AttackAction"
+
+  /red-team/attack-graph:
+    get:
+      operationId: getAttackGraph
+      tags: [red-team]
+      summary: Get dynamic attack graph (nodes + edges)
+      responses:
+        "200":
+          description: Attack graph
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AttackGraph"
+
+  /red-team/execute:
+    post:
+      operationId: executeRedTeamStep
+      tags: [red-team]
+      summary: Trigger the next autonomous Red Team reasoning step
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AgentStepInput"
+      responses:
+        "200":
+          description: Step result with reasoning
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AgentStepResult"
+
+  /red-team/findings:
+    get:
+      operationId: listRedTeamFindings
+      tags: [red-team]
+      summary: List all discovered vulnerabilities and assets
+      responses:
+        "200":
+          description: Findings
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Finding"
+
+  # ── Blue Team ─────────────────────────────────────────────────────────────────
+  /blue-team/status:
+    get:
+      operationId: getBlueTeamStatus
+      tags: [blue-team]
+      summary: Get Blue Team agent status and current defensive posture
+      responses:
+        "200":
+          description: Blue Team status
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AgentStatus"
+
+  /blue-team/alerts:
+    get:
+      operationId: listAlerts
+      tags: [blue-team]
+      summary: List all security alerts
+      responses:
+        "200":
+          description: Alert list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/SecurityAlert"
+
+  /blue-team/alerts/{id}/acknowledge:
+    patch:
+      operationId: acknowledgeAlert
+      tags: [blue-team]
+      summary: Acknowledge a security alert
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Alert acknowledged
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SecurityAlert"
+
+  /blue-team/respond:
+    post:
+      operationId: executeBlueTeamStep
+      tags: [blue-team]
+      summary: Trigger the next autonomous Blue Team response step
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AgentStepInput"
+      responses:
+        "200":
+          description: Response action result
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AgentStepResult"
+
+  /blue-team/firewall-rules:
+    get:
+      operationId: listFirewallRules
+      tags: [blue-team]
+      summary: List AI-generated firewall rules
+      responses:
+        "200":
+          description: Firewall rules
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/FirewallRule"
+
+  /blue-team/detections:
+    get:
+      operationId: listDetections
+      tags: [blue-team]
+      summary: List threat detections with MITRE mapping
+      responses:
+        "200":
+          description: Detections
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ThreatDetection"
+
+  # ── Commander ─────────────────────────────────────────────────────────────────
+  /commander/report:
+    get:
+      operationId: getCommanderReport
+      tags: [commander]
+      summary: Get latest AI Security Commander executive report
+      responses:
+        "200":
+          description: Executive report
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExecutiveReport"
+
+  /commander/risk-score:
+    get:
+      operationId: getRiskScore
+      tags: [commander]
+      summary: Get current enterprise risk score and breakdown
+      responses:
+        "200":
+          description: Risk score
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RiskScore"
+
+  /commander/analyze:
+    post:
+      operationId: runCommanderAnalysis
+      tags: [commander]
+      summary: Trigger a fresh Commander analysis of the current state
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AgentStepInput"
+      responses:
+        "200":
+          description: Analysis result
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AgentStepResult"
+
+  # ── Assets ────────────────────────────────────────────────────────────────────
+  /assets:
+    get:
+      operationId: listAssets
+      tags: [assets]
+      summary: List all cyber range network assets
+      responses:
+        "200":
+          description: Asset list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/NetworkAsset"
+
+  /assets/{id}:
+    get:
+      operationId: getAsset
+      tags: [assets]
+      summary: Get a single network asset with details
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Asset detail
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/NetworkAsset"
+        "404":
+          description: Not found
+
+  /assets/{id}/compromise:
+    patch:
+      operationId: updateAssetCompromise
+      tags: [assets]
+      summary: Update compromise status of an asset
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AssetCompromiseUpdate"
+      responses:
+        "200":
+          description: Updated asset
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/NetworkAsset"
+
+  /assets/topology:
+    get:
+      operationId: getNetworkTopology
+      tags: [assets]
+      summary: Get full network topology for visualization
+      responses:
+        "200":
+          description: Network topology
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/NetworkTopology"
+
+  # ── Threats ───────────────────────────────────────────────────────────────────
+  /threats:
+    get:
+      operationId: listThreats
+      tags: [threats]
+      summary: List threat intelligence entries with CVE and MITRE data
+      responses:
+        "200":
+          description: Threat list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ThreatIntel"
+
+  /threats/actors:
+    get:
+      operationId: listThreatActors
+      tags: [threats]
+      summary: List threat actor profiles
+      responses:
+        "200":
+          description: Threat actors
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ThreatActor"
+
+  /threats/mitre-coverage:
+    get:
+      operationId: getMitreCoverage
+      tags: [threats]
+      summary: Get MITRE ATT&CK technique coverage map
+      responses:
+        "200":
+          description: MITRE coverage
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MitreCoverage"
+
+  /threats/iocs:
+    get:
+      operationId: listIocs
+      tags: [threats]
+      summary: List indicators of compromise (IOCs)
+      responses:
+        "200":
+          description: IOC list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Ioc"
+
+  # ── Incidents ─────────────────────────────────────────────────────────────────
+  /incidents:
+    get:
+      operationId: listIncidents
+      tags: [incidents]
+      summary: List all security incidents
+      responses:
+        "200":
+          description: Incident list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Incident"
+    post:
+      operationId: createIncident
+      tags: [incidents]
+      summary: Create a new incident case
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/IncidentInput"
+      responses:
+        "201":
+          description: Created incident
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Incident"
+
+  /incidents/{id}:
+    get:
+      operationId: getIncident
+      tags: [incidents]
+      summary: Get incident details with timeline
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Incident detail
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Incident"
+        "404":
+          description: Not found
+    patch:
+      operationId: updateIncident
+      tags: [incidents]
+      summary: Update incident status or severity
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/IncidentUpdate"
+      responses:
+        "200":
+          description: Updated incident
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Incident"
+
+  /incidents/{id}/timeline:
+    get:
+      operationId: getIncidentTimeline
+      tags: [incidents]
+      summary: Get reconstructed incident timeline
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Timeline events
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/TimelineEvent"
+
+  /incidents/{id}/playbook:
+    post:
+      operationId: runIncidentPlaybook
+      tags: [incidents]
+      summary: Run automated response playbook for an incident
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PlaybookInput"
+      responses:
+        "200":
+          description: Playbook result
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PlaybookResult"
+
+  # ── SOC Dashboard ─────────────────────────────────────────────────────────────
+  /soc/summary:
+    get:
+      operationId: getSocSummary
+      tags: [soc]
+      summary: Get SOC dashboard summary (live stats)
+      responses:
+        "200":
+          description: SOC summary
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SocSummary"
+
+  /soc/heatmap:
+    get:
+      operationId: getThreatHeatmap
+      tags: [soc]
+      summary: Get threat heatmap data by asset zone
+      responses:
+        "200":
+          description: Heatmap data
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/HeatmapCell"
+
+  /soc/activity-feed:
+    get:
+      operationId: getActivityFeed
+      tags: [soc]
+      summary: Get recent SOC activity feed (last 100 events)
+      responses:
+        "200":
+          description: Activity feed
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ActivityEntry"
+
+  # ── Security Copilot ──────────────────────────────────────────────────────────
+  /copilot/chat:
+    post:
+      operationId: sendCopilotMessage
+      tags: [copilot]
+      summary: Send a message to the Security Copilot AI
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CopilotMessageInput"
+      responses:
+        "200":
+          description: Copilot response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CopilotMessage"
+
+  /copilot/history:
+    get:
+      operationId: getCopilotHistory
+      tags: [copilot]
+      summary: Get Security Copilot conversation history
+      responses:
+        "200":
+          description: Chat history
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/CopilotMessage"
+
 components:
   schemas:
     HealthStatus:
       type: object
+      required: [status]
       properties:
         status:
           type: string
-      required:
-        - status
 
+    # ── Simulation ──────────────────────────────────────────────────────────────
+    SimulationStatus:
+      type: object
+      required: [id, state, phase, redTeamScore, blueTeamScore, startedAt]
+      properties:
+        id:
+          type: integer
+        state:
+          type: string
+          enum: [idle, running, paused, completed]
+        phase:
+          type: string
+          enum: [reconnaissance, exploitation, persistence, lateral_movement, exfiltration, completed]
+        redTeamScore:
+          type: integer
+        blueTeamScore:
+          type: integer
+        overallRisk:
+          type: ["string", "null"]
+          enum: [low, medium, high, critical, null]
+        startedAt:
+          type: ["string", "null"]
+        completedAt:
+          type: ["string", "null"]
+        durationSeconds:
+          type: ["integer", "null"]
+
+    SimulationConfig:
+      type: object
+      required: [scenario]
+      properties:
+        scenario:
+          type: string
+          enum: [apt_attack, ransomware, insider_threat, supply_chain, phishing_campaign]
+        difficulty:
+          type: string
+          enum: [easy, medium, hard, expert]
+          default: medium
+        targetEnv:
+          type: string
+          default: "enterprise"
+        autoAdvance:
+          type: boolean
+          default: true
+
+    SimulationEvent:
+      type: object
+      required: [id, type, actor, description, severity, timestamp]
+      properties:
+        id:
+          type: integer
+        type:
+          type: string
+          enum: [attack, detection, response, compromise, containment, escalation]
+        actor:
+          type: string
+          enum: [red_team, blue_team, commander, system]
+        description:
+          type: string
+        severity:
+          type: string
+          enum: [info, low, medium, high, critical]
+        assetId:
+          type: ["integer", "null"]
+        assetName:
+          type: ["string", "null"]
+        technique:
+          type: ["string", "null"]
+        mitreId:
+          type: ["string", "null"]
+        timestamp:
+          type: string
+
+    SimulationMetrics:
+      type: object
+      required: [totalEvents, attacksLaunched, attacksDetected, attacksBlocked, assetsCompromised, meanTimeToDetect, meanTimeToRespond, riskReduction]
+      properties:
+        totalEvents:
+          type: integer
+        attacksLaunched:
+          type: integer
+        attacksDetected:
+          type: integer
+        attacksBlocked:
+          type: integer
+        assetsCompromised:
+          type: integer
+        meanTimeToDetect:
+          type: number
+        meanTimeToRespond:
+          type: number
+        riskReduction:
+          type: number
+        phaseBreakdown:
+          type: array
+          items:
+            type: object
+            required: [phase, count, blocked]
+            properties:
+              phase:
+                type: string
+              count:
+                type: integer
+              blocked:
+                type: integer
+
+    # ── Agent ───────────────────────────────────────────────────────────────────
+    AgentStatus:
+      type: object
+      required: [agent, state, currentObjective, actionsCompleted, reasoning]
+      properties:
+        agent:
+          type: string
+          enum: [red_team, blue_team, commander]
+        state:
+          type: string
+          enum: [idle, thinking, executing, waiting, complete]
+        currentObjective:
+          type: string
+        actionsCompleted:
+          type: integer
+        reasoning:
+          type: string
+        lastActionAt:
+          type: ["string", "null"]
+        memoryContext:
+          type: ["string", "null"]
+
+    AgentStepInput:
+      type: object
+      properties:
+        context:
+          type: ["string", "null"]
+        forcePhase:
+          type: ["string", "null"]
+
+    AgentStepResult:
+      type: object
+      required: [agent, action, reasoning, outcome, nextStep]
+      properties:
+        agent:
+          type: string
+        action:
+          type: string
+        reasoning:
+          type: string
+        outcome:
+          type: string
+          enum: [success, partial, failed, detected, blocked]
+        nextStep:
+          type: string
+        technique:
+          type: ["string", "null"]
+        mitreId:
+          type: ["string", "null"]
+        affectedAssets:
+          type: array
+          items:
+            type: string
+        generatedEvents:
+          type: array
+          items:
+            $ref: "#/components/schemas/SimulationEvent"
+
+    # ── Red Team ────────────────────────────────────────────────────────────────
+    AttackAction:
+      type: object
+      required: [id, phase, technique, target, status, timestamp]
+      properties:
+        id:
+          type: integer
+        phase:
+          type: string
+        technique:
+          type: string
+        mitreId:
+          type: ["string", "null"]
+        target:
+          type: string
+        status:
+          type: string
+          enum: [pending, executing, success, failed, detected]
+        impact:
+          type: ["string", "null"]
+        reasoning:
+          type: ["string", "null"]
+        timestamp:
+          type: string
+
+    AttackGraph:
+      type: object
+      required: [nodes, edges]
+      properties:
+        nodes:
+          type: array
+          items:
+            $ref: "#/components/schemas/AttackNode"
+        edges:
+          type: array
+          items:
+            $ref: "#/components/schemas/AttackEdge"
+        compromisedPath:
+          type: array
+          items:
+            type: string
+
+    AttackNode:
+      type: object
+      required: [id, label, type, status]
+      properties:
+        id:
+          type: string
+        label:
+          type: string
+        type:
+          type: string
+          enum: [asset, technique, credential, data, internet]
+        status:
+          type: string
+          enum: [intact, targeted, compromised, defended]
+        assetId:
+          type: ["integer", "null"]
+        riskScore:
+          type: ["integer", "null"]
+
+    AttackEdge:
+      type: object
+      required: [source, target, technique]
+      properties:
+        source:
+          type: string
+        target:
+          type: string
+        technique:
+          type: string
+        status:
+          type: string
+          enum: [attempted, success, blocked]
+
+    Finding:
+      type: object
+      required: [id, type, title, severity, asset, description, timestamp]
+      properties:
+        id:
+          type: integer
+        type:
+          type: string
+          enum: [vulnerability, misconfiguration, credential, data_exposure, service]
+        title:
+          type: string
+        severity:
+          type: string
+          enum: [low, medium, high, critical]
+        asset:
+          type: string
+        cveId:
+          type: ["string", "null"]
+        description:
+          type: string
+        exploitable:
+          type: boolean
+          default: false
+        timestamp:
+          type: string
+
+    # ── Blue Team ───────────────────────────────────────────────────────────────
+    SecurityAlert:
+      type: object
+      required: [id, title, severity, status, source, description, timestamp]
+      properties:
+        id:
+          type: integer
+        title:
+          type: string
+        severity:
+          type: string
+          enum: [low, medium, high, critical]
+        status:
+          type: string
+          enum: [open, acknowledged, investigating, resolved, false_positive]
+        source:
+          type: string
+          enum: [ids, siem, edr, firewall, honeypot, anomaly_detection]
+        description:
+          type: string
+        affectedAsset:
+          type: ["string", "null"]
+        mitreId:
+          type: ["string", "null"]
+        confidence:
+          type: number
+        timestamp:
+          type: string
+        acknowledgedAt:
+          type: ["string", "null"]
+
+    FirewallRule:
+      type: object
+      required: [id, action, protocol, source, destination, reason, createdAt]
+      properties:
+        id:
+          type: integer
+        action:
+          type: string
+          enum: [allow, deny, drop, log]
+        protocol:
+          type: string
+        source:
+          type: string
+        destination:
+          type: string
+        port:
+          type: ["string", "null"]
+        reason:
+          type: string
+        active:
+          type: boolean
+          default: true
+        createdAt:
+          type: string
+
+    ThreatDetection:
+      type: object
+      required: [id, name, technique, mitreId, confidence, status, detectedAt]
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        technique:
+          type: string
+        mitreId:
+          type: string
+        confidence:
+          type: number
+        status:
+          type: string
+          enum: [detected, investigating, contained, resolved]
+        affectedAssets:
+          type: array
+          items:
+            type: string
+        detectedAt:
+          type: string
+
+    # ── Commander ───────────────────────────────────────────────────────────────
+    ExecutiveReport:
+      type: object
+      required: [id, generatedAt, executiveSummary, technicalSummary, riskLevel, financialImpact, mitigations, compliance]
+      properties:
+        id:
+          type: integer
+        generatedAt:
+          type: string
+        executiveSummary:
+          type: string
+        technicalSummary:
+          type: string
+        riskLevel:
+          type: string
+          enum: [low, medium, high, critical]
+        financialImpact:
+          type: string
+        mitigations:
+          type: array
+          items:
+            type: string
+        compliance:
+          type: object
+          required: [nist, iso27001, soc2]
+          properties:
+            nist:
+              type: string
+            iso27001:
+              type: string
+            soc2:
+              type: string
+        attackChainSummary:
+          type: ["string", "null"]
+
+    RiskScore:
+      type: object
+      required: [overall, categories, trend, lastUpdated]
+      properties:
+        overall:
+          type: integer
+        categories:
+          type: object
+          required: [network, endpoint, application, data, identity]
+          properties:
+            network:
+              type: integer
+            endpoint:
+              type: integer
+            application:
+              type: integer
+            data:
+              type: integer
+            identity:
+              type: integer
+        trend:
+          type: string
+          enum: [improving, stable, worsening, critical]
+        lastUpdated:
+          type: string
+
+    # ── Assets ──────────────────────────────────────────────────────────────────
+    NetworkAsset:
+      type: object
+      required: [id, name, type, zone, ipAddress, os, services, compromiseLevel, status]
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        type:
+          type: string
+          enum: [web_server, app_server, database, domain_controller, workstation, email_server, firewall, router]
+        zone:
+          type: string
+          enum: [dmz, internal, restricted, management]
+        department:
+          type: ["string", "null"]
+          enum: [hr, finance, it, executive, public, null]
+        ipAddress:
+          type: string
+        os:
+          type: string
+        services:
+          type: array
+          items:
+            type: string
+        vulnerabilities:
+          type: array
+          items:
+            type: string
+        compromiseLevel:
+          type: integer
+          minimum: 0
+          maximum: 100
+        status:
+          type: string
+          enum: [healthy, targeted, compromised, isolated, offline]
+        x:
+          type: ["number", "null"]
+        y:
+          type: ["number", "null"]
+
+    AssetCompromiseUpdate:
+      type: object
+      required: [compromiseLevel, status]
+      properties:
+        compromiseLevel:
+          type: integer
+          minimum: 0
+          maximum: 100
+        status:
+          type: string
+          enum: [healthy, targeted, compromised, isolated, offline]
+
+    NetworkTopology:
+      type: object
+      required: [assets, connections, zones]
+      properties:
+        assets:
+          type: array
+          items:
+            $ref: "#/components/schemas/NetworkAsset"
+        connections:
+          type: array
+          items:
+            $ref: "#/components/schemas/NetworkConnection"
+        zones:
+          type: array
+          items:
+            $ref: "#/components/schemas/NetworkZone"
+
+    NetworkConnection:
+      type: object
+      required: [source, target, protocol, encrypted]
+      properties:
+        source:
+          type: integer
+        target:
+          type: integer
+        protocol:
+          type: string
+        encrypted:
+          type: boolean
+        bandwidth:
+          type: ["string", "null"]
+
+    NetworkZone:
+      type: object
+      required: [id, name, color, description]
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        color:
+          type: string
+        description:
+          type: string
+        riskLevel:
+          type: string
+          enum: [low, medium, high, critical]
+
+    # ── Threats ─────────────────────────────────────────────────────────────────
+    ThreatIntel:
+      type: object
+      required: [id, cveId, title, severity, cvssScore, description, affectedSystems, exploitability, published]
+      properties:
+        id:
+          type: integer
+        cveId:
+          type: string
+        title:
+          type: string
+        severity:
+          type: string
+          enum: [low, medium, high, critical]
+        cvssScore:
+          type: number
+        description:
+          type: string
+        affectedSystems:
+          type: array
+          items:
+            type: string
+        mitreId:
+          type: ["string", "null"]
+        exploitability:
+          type: string
+          enum: [unproven, proof_of_concept, functional, high]
+        patchAvailable:
+          type: boolean
+        published:
+          type: string
+
+    ThreatActor:
+      type: object
+      required: [id, name, aliases, motivation, sophistication, targetedSectors, tactics, description]
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        aliases:
+          type: array
+          items:
+            type: string
+        motivation:
+          type: string
+          enum: [financial, espionage, disruption, hacktivism, terrorism]
+        sophistication:
+          type: string
+          enum: [minimal, intermediate, advanced, expert]
+        targetedSectors:
+          type: array
+          items:
+            type: string
+        tactics:
+          type: array
+          items:
+            type: string
+        description:
+          type: string
+        activeStatus:
+          type: boolean
+
+    MitreCoverage:
+      type: object
+      required: [tactics, techniques, covered, total, coveragePercent]
+      properties:
+        tactics:
+          type: array
+          items:
+            $ref: "#/components/schemas/MitreTactic"
+        techniques:
+          type: array
+          items:
+            $ref: "#/components/schemas/MitreTechnique"
+        covered:
+          type: integer
+        total:
+          type: integer
+        coveragePercent:
+          type: number
+
+    MitreTactic:
+      type: object
+      required: [id, name, techniqueCount, coveredCount]
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        techniqueCount:
+          type: integer
+        coveredCount:
+          type: integer
+
+    MitreTechnique:
+      type: object
+      required: [id, name, tactic, detected, blocked]
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        tactic:
+          type: string
+        detected:
+          type: boolean
+        blocked:
+          type: boolean
+        severity:
+          type: string
+          enum: [low, medium, high, critical]
+
+    Ioc:
+      type: object
+      required: [id, type, value, severity, confidence, description, firstSeen]
+      properties:
+        id:
+          type: integer
+        type:
+          type: string
+          enum: [ip, domain, hash, url, email, registry_key]
+        value:
+          type: string
+        severity:
+          type: string
+          enum: [low, medium, high, critical]
+        confidence:
+          type: number
+        description:
+          type: string
+        associatedActor:
+          type: ["string", "null"]
+        firstSeen:
+          type: string
+        lastSeen:
+          type: ["string", "null"]
+
+    # ── Incidents ───────────────────────────────────────────────────────────────
+    Incident:
+      type: object
+      required: [id, title, severity, status, description, affectedAssets, createdAt, updatedAt]
+      properties:
+        id:
+          type: integer
+        title:
+          type: string
+        severity:
+          type: string
+          enum: [low, medium, high, critical]
+        status:
+          type: string
+          enum: [open, investigating, contained, resolved, closed]
+        description:
+          type: string
+        affectedAssets:
+          type: array
+          items:
+            type: string
+        assignee:
+          type: ["string", "null"]
+        rootCause:
+          type: ["string", "null"]
+        mitigations:
+          type: array
+          items:
+            type: string
+        evidenceCount:
+          type: integer
+        createdAt:
+          type: string
+        updatedAt:
+          type: string
+        resolvedAt:
+          type: ["string", "null"]
+
+    IncidentInput:
+      type: object
+      required: [title, severity, description]
+      properties:
+        title:
+          type: string
+          minLength: 1
+        severity:
+          type: string
+          enum: [low, medium, high, critical]
+        description:
+          type: string
+        affectedAssets:
+          type: array
+          items:
+            type: string
+
+    IncidentUpdate:
+      type: object
+      properties:
+        status:
+          type: ["string", "null"]
+          enum: [open, investigating, contained, resolved, closed, null]
+        severity:
+          type: ["string", "null"]
+          enum: [low, medium, high, critical, null]
+        assignee:
+          type: ["string", "null"]
+        rootCause:
+          type: ["string", "null"]
+
+    TimelineEvent:
+      type: object
+      required: [id, timestamp, type, description, actor]
+      properties:
+        id:
+          type: integer
+        timestamp:
+          type: string
+        type:
+          type: string
+          enum: [attack, detection, response, escalation, containment, resolution]
+        description:
+          type: string
+        actor:
+          type: string
+        evidence:
+          type: ["string", "null"]
+        assetId:
+          type: ["integer", "null"]
+
+    PlaybookInput:
+      type: object
+      required: [playbookType]
+      properties:
+        playbookType:
+          type: string
+          enum: [isolate, forensics, patch, reset_credentials, block_ip, notify_stakeholders]
+
+    PlaybookResult:
+      type: object
+      required: [playbookType, steps, success, summary]
+      properties:
+        playbookType:
+          type: string
+        steps:
+          type: array
+          items:
+            type: object
+            required: [step, status, output]
+            properties:
+              step:
+                type: string
+              status:
+                type: string
+                enum: [completed, failed, skipped]
+              output:
+                type: string
+        success:
+          type: boolean
+        summary:
+          type: string
+
+    # ── SOC ─────────────────────────────────────────────────────────────────────
+    SocSummary:
+      type: object
+      required: [activeIncidents, openAlerts, criticalAlerts, assetsMonitored, assetsCompromised, riskScore, detectionRate, meanTimeToDetect, eventsPerMinute, topThreats]
+      properties:
+        activeIncidents:
+          type: integer
+        openAlerts:
+          type: integer
+        criticalAlerts:
+          type: integer
+        assetsMonitored:
+          type: integer
+        assetsCompromised:
+          type: integer
+        riskScore:
+          type: integer
+        detectionRate:
+          type: number
+        meanTimeToDetect:
+          type: number
+        eventsPerMinute:
+          type: number
+        topThreats:
+          type: array
+          items:
+            type: object
+            required: [name, count, severity]
+            properties:
+              name:
+                type: string
+              count:
+                type: integer
+              severity:
+                type: string
+
+    HeatmapCell:
+      type: object
+      required: [zone, asset, value, severity]
+      properties:
+        zone:
+          type: string
+        asset:
+          type: string
+        value:
+          type: integer
+        severity:
+          type: string
+          enum: [low, medium, high, critical]
+
+    ActivityEntry:
+      type: object
+      required: [id, timestamp, type, actor, description, severity]
+      properties:
+        id:
+          type: integer
+        timestamp:
+          type: string
+        type:
+          type: string
+        actor:
+          type: string
+        description:
+          type: string
+        severity:
+          type: string
+          enum: [info, low, medium, high, critical]
+        assetName:
+          type: ["string", "null"]
+
+    # ── Copilot ─────────────────────────────────────────────────────────────────
+    CopilotMessageInput:
+      type: object
+      required: [message]
+      properties:
+        message:
+          type: string
+          minLength: 1
+        context:
+          type: ["string", "null"]
+          enum: [red_team, blue_team, commander, incident, general, null]
+
+    CopilotMessage:
+      type: object
+      required: [id, role, content, timestamp]
+      properties:
+        id:
+          type: integer
+        role:
+          type: string
+          enum: [user, assistant]
+        content:
+          type: string
+        context:
+          type: ["string", "null"]
+        timestamp:
+          type: string

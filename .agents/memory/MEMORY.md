@@ -1,0 +1,2 @@
+- [SentinelX OpenAI client](sentinelx-openai.md) — use OPENAI_API_KEY directly; never import integrations-openai-ai-server lib
+- [SentinelX Orval hook pattern](sentinelx-hooks.md) — always destructure `.data` from hooks; hook result is UseQueryResult not T directly
