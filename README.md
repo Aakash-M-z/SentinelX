@@ -52,7 +52,7 @@ Designed as a next-generation Security Operations Center (SOC), SentinelX enable
 | Frontend   | React, TypeScript, Vite, Tailwind CSS |
 | Backend    | Node.js, Express, TypeScript          |
 | Database   | SQLite, Drizzle ORM                   |
-| AI Layer   | OpenRouter, Groq, OpenAI              |
+| AI Layer   | OpenRouter, Groq                      |
 | Deployment | Vercel, Render                        |
 | Monitoring | Pino Logger                           |
 
