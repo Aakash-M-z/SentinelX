@@ -2,7 +2,7 @@ import { Router, type IRouter } from "express";
 import { db } from "@workspace/db";
 import { copilotMessagesTable, simulationsTable, networkAssetsTable, securityAlertsTable, findingsTable } from "@workspace/db";
 import { desc } from "drizzle-orm";
-import { openai } from "../lib/openai";
+import { chatText } from "../lib/openai";
 
 const router: IRouter = Router();
 
@@ -46,8 +46,10 @@ Respond as a professional cybersecurity analyst. Be concise, actionable, and tec
     { role: "user" as const, content: message },
   ];
 
-  const response = await openai.chat.completions.create({ model: "gpt-4o-mini", max_completion_tokens: 1024, messages });
-  const assistantContent = response.choices[0]?.message?.content ?? "I'm analyzing the current threat landscape. Please try again.";
+  const assistantContent = await chatText(messages).catch((err) => {
+    console.error("[Copilot Chat Error]", err);
+    return "I'm analyzing the current threat landscape. Please try again.";
+  });
 
   const [saved] = await db.insert(copilotMessagesTable).values({ role: "assistant", content: assistantContent, context: context ?? null }).returning();
 

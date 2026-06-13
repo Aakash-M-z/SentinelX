@@ -177,7 +177,9 @@ export const GetAttackGraphResponse = zod.object({
   "type": zod.enum(['asset', 'technique', 'credential', 'data', 'internet']),
   "status": zod.enum(['intact', 'targeted', 'compromised', 'defended']),
   "assetId": zod.number().nullish(),
-  "riskScore": zod.number().nullish()
+  "riskScore": zod.number().nullish(),
+  "x": zod.number().nullish(),
+  "y": zod.number().nullish()
 })),
   "edges": zod.array(zod.object({
   "source": zod.string(),

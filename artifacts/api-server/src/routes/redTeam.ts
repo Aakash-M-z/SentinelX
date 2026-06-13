@@ -34,9 +34,26 @@ router.get("/red-team/attacks", async (req, res): Promise<void> => {
 router.get("/red-team/attack-graph", async (req, res): Promise<void> => {
   const nodes = await db.select().from(attackGraphNodesTable);
   const edges = await db.select().from(attackGraphEdgesTable);
+  const assets = await db.select().from(networkAssetsTable);
+  
+  const assetMap = new Map(assets.map((a) => [a.id, a]));
+  const nodesWithCoords = nodes.map((n) => {
+    const asset = n.assetId ? assetMap.get(n.assetId) : null;
+    return {
+      id: n.nodeId,
+      label: n.label,
+      type: n.type,
+      status: n.status,
+      assetId: n.assetId ?? null,
+      riskScore: n.riskScore ?? null,
+      x: asset ? asset.x : null,
+      y: asset ? asset.y : null,
+    };
+  });
+
   const compromisedNodes = nodes.filter((n) => n.status === "compromised").map((n) => n.nodeId);
   res.json({
-    nodes: nodes.map((n) => ({ ...n, assetId: n.assetId ?? null, riskScore: n.riskScore ?? null })),
+    nodes: nodesWithCoords,
     edges: edges.map((e) => ({ source: e.source, target: e.target, technique: e.technique, status: e.status })),
     compromisedPath: compromisedNodes,
   });

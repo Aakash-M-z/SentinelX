@@ -276,6 +276,10 @@ export interface AttackNode {
   assetId?: number | null;
   /** @nullable */
   riskScore?: number | null;
+  /** @nullable */
+  x?: number | null;
+  /** @nullable */
+  y?: number | null;
 }
 
 export type AttackEdgeStatus = typeof AttackEdgeStatus[keyof typeof AttackEdgeStatus];

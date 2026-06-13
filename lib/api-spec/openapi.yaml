@@ -928,6 +928,10 @@ components:
           type: ["integer", "null"]
         riskScore:
           type: ["integer", "null"]
+        x:
+          type: ["number", "null"]
+        y:
+          type: ["number", "null"]
 
     AttackEdge:
       type: object

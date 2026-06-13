@@ -1,3 +1,23 @@
+import dotenv from "dotenv";
+import path from "path";
+import fs from "fs";
+
+// Find and load .env from workspace root or current directory
+const possiblePaths = [
+  path.resolve(process.cwd(), ".env"),
+  path.resolve(process.cwd(), "../../.env"),
+  path.resolve(import.meta.dirname, "../../../.env"),
+  path.resolve(import.meta.dirname, "../../.env"),
+];
+for (const envPath of possiblePaths) {
+  if (fs.existsSync(envPath)) {
+    dotenv.config({ path: envPath });
+    break;
+  }
+}
+
+process.env.NODE_ENV = process.env.NODE_ENV || "development";
+
 import app from "./app";
 import { logger } from "./lib/logger";
 
