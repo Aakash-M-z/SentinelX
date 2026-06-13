@@ -1,11 +1,11 @@
-import { pgTable, serial, text, timestamp } from "drizzle-orm/pg-core";
+import { sqliteTable, integer, text } from "drizzle-orm/sqlite-core";
 
-export const copilotMessagesTable = pgTable("copilot_messages", {
-  id: serial("id").primaryKey(),
+export const copilotMessagesTable = sqliteTable("copilot_messages", {
+  id: integer("id").primaryKey({ autoIncrement: true }),
   role: text("role").notNull(),
   content: text("content").notNull(),
   context: text("context"),
-  timestamp: timestamp("timestamp").notNull().defaultNow(),
+  timestamp: integer("timestamp", { mode: "timestamp" }).notNull().$defaultFn(() => new Date()),
 });
 
 export type CopilotMessage = typeof copilotMessagesTable.$inferSelect;

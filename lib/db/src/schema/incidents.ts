@@ -1,27 +1,27 @@
-import { pgTable, serial, text, integer, timestamp, jsonb } from "drizzle-orm/pg-core";
+import { sqliteTable, integer, text } from "drizzle-orm/sqlite-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod/v4";
 
-export const incidentsTable = pgTable("incidents", {
-  id: serial("id").primaryKey(),
+export const incidentsTable = sqliteTable("incidents", {
+  id: integer("id").primaryKey({ autoIncrement: true }),
   title: text("title").notNull(),
   severity: text("severity").notNull(),
   status: text("status").notNull().default("open"),
   description: text("description").notNull(),
-  affectedAssets: jsonb("affected_assets").$type<string[]>().notNull().default([]),
+  affectedAssets: text("affected_assets", { mode: "json" }).$type<string[]>().notNull().default([]),
   assignee: text("assignee"),
   rootCause: text("root_cause"),
-  mitigations: jsonb("mitigations").$type<string[]>().notNull().default([]),
+  mitigations: text("mitigations", { mode: "json" }).$type<string[]>().notNull().default([]),
   evidenceCount: integer("evidence_count").notNull().default(0),
-  createdAt: timestamp("created_at").notNull().defaultNow(),
-  updatedAt: timestamp("updated_at").notNull().defaultNow(),
-  resolvedAt: timestamp("resolved_at"),
+  createdAt: integer("created_at", { mode: "timestamp" }).notNull().$defaultFn(() => new Date()),
+  updatedAt: integer("updated_at", { mode: "timestamp" }).notNull().$defaultFn(() => new Date()),
+  resolvedAt: integer("resolved_at", { mode: "timestamp" }),
 });
 
-export const timelineEventsTable = pgTable("timeline_events", {
-  id: serial("id").primaryKey(),
+export const timelineEventsTable = sqliteTable("timeline_events", {
+  id: integer("id").primaryKey({ autoIncrement: true }),
   incidentId: integer("incident_id").notNull(),
-  timestamp: timestamp("timestamp").notNull().defaultNow(),
+  timestamp: integer("timestamp", { mode: "timestamp" }).notNull().$defaultFn(() => new Date()),
   type: text("type").notNull(),
   description: text("description").notNull(),
   actor: text("actor").notNull(),

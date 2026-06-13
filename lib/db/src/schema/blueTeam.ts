@@ -1,8 +1,7 @@
-import { pgTable, serial, text, integer, timestamp, real, jsonb } from "drizzle-orm/pg-core";
-import { createInsertSchema } from "drizzle-zod";
+import { sqliteTable, integer, text, real } from "drizzle-orm/sqlite-core";
 
-export const securityAlertsTable = pgTable("security_alerts", {
-  id: serial("id").primaryKey(),
+export const securityAlertsTable = sqliteTable("security_alerts", {
+  id: integer("id").primaryKey({ autoIncrement: true }),
   title: text("title").notNull(),
   severity: text("severity").notNull(),
   status: text("status").notNull().default("open"),
@@ -11,12 +10,12 @@ export const securityAlertsTable = pgTable("security_alerts", {
   affectedAsset: text("affected_asset"),
   mitreId: text("mitre_id"),
   confidence: real("confidence").notNull().default(0.8),
-  timestamp: timestamp("timestamp").notNull().defaultNow(),
-  acknowledgedAt: timestamp("acknowledged_at"),
+  timestamp: integer("timestamp", { mode: "timestamp" }).notNull().$defaultFn(() => new Date()),
+  acknowledgedAt: integer("acknowledged_at", { mode: "timestamp" }),
 });
 
-export const firewallRulesTable = pgTable("firewall_rules", {
-  id: serial("id").primaryKey(),
+export const firewallRulesTable = sqliteTable("firewall_rules", {
+  id: integer("id").primaryKey({ autoIncrement: true }),
   action: text("action").notNull(),
   protocol: text("protocol").notNull(),
   source: text("source").notNull(),
@@ -24,18 +23,18 @@ export const firewallRulesTable = pgTable("firewall_rules", {
   port: text("port"),
   reason: text("reason").notNull(),
   active: integer("active").notNull().default(1),
-  createdAt: timestamp("created_at").notNull().defaultNow(),
+  createdAt: integer("created_at", { mode: "timestamp" }).notNull().$defaultFn(() => new Date()),
 });
 
-export const threatDetectionsTable = pgTable("threat_detections", {
-  id: serial("id").primaryKey(),
+export const threatDetectionsTable = sqliteTable("threat_detections", {
+  id: integer("id").primaryKey({ autoIncrement: true }),
   name: text("name").notNull(),
   technique: text("technique").notNull(),
   mitreId: text("mitre_id").notNull(),
   confidence: real("confidence").notNull(),
   status: text("status").notNull().default("detected"),
-  affectedAssets: jsonb("affected_assets").$type<string[]>().notNull().default([]),
-  detectedAt: timestamp("detected_at").notNull().defaultNow(),
+  affectedAssets: text("affected_assets", { mode: "json" }).$type<string[]>().notNull().default([]),
+  detectedAt: integer("detected_at", { mode: "timestamp" }).notNull().$defaultFn(() => new Date()),
 });
 
 export type SecurityAlert = typeof securityAlertsTable.$inferSelect;

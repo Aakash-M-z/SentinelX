@@ -1,8 +1,7 @@
-import { pgTable, serial, text, integer, timestamp, boolean, jsonb } from "drizzle-orm/pg-core";
-import { createInsertSchema } from "drizzle-zod";
+import { sqliteTable, integer, text } from "drizzle-orm/sqlite-core";
 
-export const attackActionsTable = pgTable("attack_actions", {
-  id: serial("id").primaryKey(),
+export const attackActionsTable = sqliteTable("attack_actions", {
+  id: integer("id").primaryKey({ autoIncrement: true }),
   simulationId: integer("simulation_id"),
   phase: text("phase").notNull(),
   technique: text("technique").notNull(),
@@ -11,11 +10,11 @@ export const attackActionsTable = pgTable("attack_actions", {
   status: text("status").notNull().default("pending"),
   impact: text("impact"),
   reasoning: text("reasoning"),
-  timestamp: timestamp("timestamp").notNull().defaultNow(),
+  timestamp: integer("timestamp", { mode: "timestamp" }).notNull().$defaultFn(() => new Date()),
 });
 
-export const findingsTable = pgTable("findings", {
-  id: serial("id").primaryKey(),
+export const findingsTable = sqliteTable("findings", {
+  id: integer("id").primaryKey({ autoIncrement: true }),
   simulationId: integer("simulation_id"),
   type: text("type").notNull(),
   title: text("title").notNull(),
@@ -23,12 +22,12 @@ export const findingsTable = pgTable("findings", {
   asset: text("asset").notNull(),
   cveId: text("cve_id"),
   description: text("description").notNull(),
-  exploitable: boolean("exploitable").notNull().default(false),
-  timestamp: timestamp("timestamp").notNull().defaultNow(),
+  exploitable: integer("exploitable", { mode: "boolean" }).notNull().default(false),
+  timestamp: integer("timestamp", { mode: "timestamp" }).notNull().$defaultFn(() => new Date()),
 });
 
-export const attackGraphNodesTable = pgTable("attack_graph_nodes", {
-  id: serial("id").primaryKey(),
+export const attackGraphNodesTable = sqliteTable("attack_graph_nodes", {
+  id: integer("id").primaryKey({ autoIncrement: true }),
   nodeId: text("node_id").notNull().unique(),
   label: text("label").notNull(),
   type: text("type").notNull(),
@@ -37,8 +36,8 @@ export const attackGraphNodesTable = pgTable("attack_graph_nodes", {
   riskScore: integer("risk_score"),
 });
 
-export const attackGraphEdgesTable = pgTable("attack_graph_edges", {
-  id: serial("id").primaryKey(),
+export const attackGraphEdgesTable = sqliteTable("attack_graph_edges", {
+  id: integer("id").primaryKey({ autoIncrement: true }),
   source: text("source").notNull(),
   target: text("target").notNull(),
   technique: text("technique").notNull(),

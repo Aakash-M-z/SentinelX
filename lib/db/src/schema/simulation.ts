@@ -1,9 +1,9 @@
-import { pgTable, serial, text, integer, timestamp, boolean, jsonb } from "drizzle-orm/pg-core";
+import { sqliteTable, integer, text } from "drizzle-orm/sqlite-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod/v4";
 
-export const simulationsTable = pgTable("simulations", {
-  id: serial("id").primaryKey(),
+export const simulationsTable = sqliteTable("simulations", {
+  id: integer("id").primaryKey({ autoIncrement: true }),
   state: text("state").notNull().default("idle"),
   phase: text("phase").notNull().default("reconnaissance"),
   scenario: text("scenario").notNull().default("apt_attack"),
@@ -11,13 +11,13 @@ export const simulationsTable = pgTable("simulations", {
   redTeamScore: integer("red_team_score").notNull().default(0),
   blueTeamScore: integer("blue_team_score").notNull().default(0),
   overallRisk: text("overall_risk"),
-  autoAdvance: boolean("auto_advance").notNull().default(true),
-  startedAt: timestamp("started_at"),
-  completedAt: timestamp("completed_at"),
+  autoAdvance: integer("auto_advance", { mode: "boolean" }).notNull().default(true),
+  startedAt: integer("started_at", { mode: "timestamp" }),
+  completedAt: integer("completed_at", { mode: "timestamp" }),
 });
 
-export const simulationEventsTable = pgTable("simulation_events", {
-  id: serial("id").primaryKey(),
+export const simulationEventsTable = sqliteTable("simulation_events", {
+  id: integer("id").primaryKey({ autoIncrement: true }),
   simulationId: integer("simulation_id"),
   type: text("type").notNull(),
   actor: text("actor").notNull(),
@@ -27,18 +27,18 @@ export const simulationEventsTable = pgTable("simulation_events", {
   assetName: text("asset_name"),
   technique: text("technique"),
   mitreId: text("mitre_id"),
-  timestamp: timestamp("timestamp").notNull().defaultNow(),
+  timestamp: integer("timestamp", { mode: "timestamp" }).notNull().$defaultFn(() => new Date()),
 });
 
-export const agentStatesTable = pgTable("agent_states", {
-  id: serial("id").primaryKey(),
+export const agentStatesTable = sqliteTable("agent_states", {
+  id: integer("id").primaryKey({ autoIncrement: true }),
   agent: text("agent").notNull().unique(),
   state: text("state").notNull().default("idle"),
   currentObjective: text("current_objective").notNull().default("Awaiting orders"),
   actionsCompleted: integer("actions_completed").notNull().default(0),
   reasoning: text("reasoning").notNull().default(""),
   memoryContext: text("memory_context"),
-  lastActionAt: timestamp("last_action_at"),
+  lastActionAt: integer("last_action_at", { mode: "timestamp" }),
 });
 
 export const insertSimulationSchema = createInsertSchema(simulationsTable);

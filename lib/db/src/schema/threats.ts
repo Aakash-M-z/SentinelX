@@ -1,41 +1,41 @@
-import { pgTable, serial, text, integer, timestamp, real, boolean, jsonb } from "drizzle-orm/pg-core";
+import { sqliteTable, integer, text, real } from "drizzle-orm/sqlite-core";
 
-export const threatIntelTable = pgTable("threat_intel", {
-  id: serial("id").primaryKey(),
+export const threatIntelTable = sqliteTable("threat_intel", {
+  id: integer("id").primaryKey({ autoIncrement: true }),
   cveId: text("cve_id").notNull(),
   title: text("title").notNull(),
   severity: text("severity").notNull(),
   cvssScore: real("cvss_score").notNull(),
   description: text("description").notNull(),
-  affectedSystems: jsonb("affected_systems").$type<string[]>().notNull().default([]),
+  affectedSystems: text("affected_systems", { mode: "json" }).$type<string[]>().notNull().default([]),
   mitreId: text("mitre_id"),
   exploitability: text("exploitability").notNull().default("unproven"),
-  patchAvailable: boolean("patch_available").notNull().default(false),
-  published: timestamp("published").notNull().defaultNow(),
+  patchAvailable: integer("patch_available", { mode: "boolean" }).notNull().default(false),
+  published: integer("published", { mode: "timestamp" }).notNull().$defaultFn(() => new Date()),
 });
 
-export const threatActorsTable = pgTable("threat_actors", {
-  id: serial("id").primaryKey(),
+export const threatActorsTable = sqliteTable("threat_actors", {
+  id: integer("id").primaryKey({ autoIncrement: true }),
   name: text("name").notNull(),
-  aliases: jsonb("aliases").$type<string[]>().notNull().default([]),
+  aliases: text("aliases", { mode: "json" }).$type<string[]>().notNull().default([]),
   motivation: text("motivation").notNull(),
   sophistication: text("sophistication").notNull(),
-  targetedSectors: jsonb("targeted_sectors").$type<string[]>().notNull().default([]),
-  tactics: jsonb("tactics").$type<string[]>().notNull().default([]),
+  targetedSectors: text("targeted_sectors", { mode: "json" }).$type<string[]>().notNull().default([]),
+  tactics: text("tactics", { mode: "json" }).$type<string[]>().notNull().default([]),
   description: text("description").notNull(),
-  activeStatus: boolean("active_status").notNull().default(true),
+  activeStatus: integer("active_status", { mode: "boolean" }).notNull().default(true),
 });
 
-export const iocsTable = pgTable("iocs", {
-  id: serial("id").primaryKey(),
+export const iocsTable = sqliteTable("iocs", {
+  id: integer("id").primaryKey({ autoIncrement: true }),
   type: text("type").notNull(),
   value: text("value").notNull(),
   severity: text("severity").notNull(),
   confidence: real("confidence").notNull(),
   description: text("description").notNull(),
   associatedActor: text("associated_actor"),
-  firstSeen: timestamp("first_seen").notNull().defaultNow(),
-  lastSeen: timestamp("last_seen"),
+  firstSeen: integer("first_seen", { mode: "timestamp" }).notNull().$defaultFn(() => new Date()),
+  lastSeen: integer("last_seen", { mode: "timestamp" }),
 });
 
 export type ThreatIntel = typeof threatIntelTable.$inferSelect;
