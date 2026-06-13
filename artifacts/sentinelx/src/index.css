@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap');
 @import "tailwindcss";
 @import "tw-animate-css";
 @plugin "@tailwindcss/typography";
@@ -68,83 +68,76 @@
 }
 
 :root, .dark {
-  --button-outline: rgba(239, 68, 68, .15);
-  --badge-outline: rgba(239, 68, 68, .10);
+  /* Futuristic Dark Cyberpunk Theme Variables */
+  --background: 240 10% 4%;
+  --foreground: 0 0% 98%;
 
-  --opaque-button-border-intensity: -5;
+  /* Floating translucent panels */
+  --card: 240 10% 6%;
+  --card-foreground: 0 0% 98%;
+  --card-border: 240 10% 12%;
 
-  --elevate-1: rgba(239, 68, 68, .05);
-  --elevate-2: rgba(239, 68, 68, .10);
+  --popover: 240 10% 6%;
+  --popover-foreground: 0 0% 98%;
+  --popover-border: 240 10% 12%;
 
-  /* Clean red/white theme */
-  --background: 0 0% 99%;
-  --foreground: 0 0% 10%;
-
-  /* White card panels with light borders */
-  --card: 0 0% 100%;
-  --card-foreground: 0 0% 10%;
-  --card-border: 0 0% 88%;
-
-  --popover: 0 0% 100%;
-  --popover-foreground: 0 0% 10%;
-  --popover-border: 0 0% 88%;
-
-  /* Vivid Crimson Red */
-  --primary: 354 85% 52%;
+  /* Sentinel Red (#FF1744) */
+  --primary: 348 100% 55%;
   --primary-foreground: 0 0% 100%;
 
-  --secondary: 0 0% 96%;
-  --secondary-foreground: 0 0% 10%;
+  --secondary: 240 10% 9%;
+  --secondary-foreground: 0 0% 90%;
 
-  --muted: 0 0% 95%;
-  --muted-foreground: 0 0% 40%;
+  --muted: 240 10% 9%;
+  --muted-foreground: 240 5% 65%;
 
-  --accent: 354 85% 95%;
-  --accent-foreground: 354 85% 42%;
+  --accent: 348 100% 12%;
+  --accent-foreground: 348 100% 80%;
 
-  --destructive: 354 85% 52%;
+  --destructive: 348 100% 55%;
   --destructive-foreground: 0 0% 100%;
 
-  --border: 0 0% 88%;
-  --input: 0 0% 90%;
-  --ring: 354 85% 52%;
+  --border: 240 10% 12%;
+  --input: 240 10% 9%;
+  --ring: 348 100% 55%;
 
-  --sidebar: 0 0% 100%;
-  --sidebar-foreground: 0 0% 12%;
-  --sidebar-border: 0 0% 88%;
-  --sidebar-primary: 354 85% 52%;
+  /* Sidebar details */
+  --sidebar: 240 10% 5%;
+  --sidebar-foreground: 240 5% 85%;
+  --sidebar-border: 240 10% 10%;
+  --sidebar-primary: 348 100% 55%;
   --sidebar-primary-foreground: 0 0% 100%;
-  --sidebar-accent: 0 0% 93%;
-  --sidebar-accent-foreground: 0 0% 15%;
-  --sidebar-ring: 354 85% 52%;
+  --sidebar-accent: 240 10% 9%;
+  --sidebar-accent-foreground: 240 5% 95%;
+  --sidebar-ring: 348 100% 55%;
 
-  --chart-1: 354 85% 52%;
-  --chart-2: 0 0% 12%;
-  --chart-3: 0 0% 50%;
-  --chart-4: 354 85% 70%;
-  --chart-5: 0 0% 30%;
+  --chart-1: 348 100% 55%;
+  --chart-2: 200 100% 50%;
+  --chart-3: 38 92% 50%;
+  --chart-4: 280 100% 60%;
+  --chart-5: 140 100% 50%;
 
   --app-font-sans: 'Space Grotesk', system-ui, sans-serif;
   --app-font-serif: Georgia, serif;
   --app-font-mono: 'Space Mono', Menlo, monospace;
-  --radius: 0.25rem; 
+  --radius: 0.375rem;
 
-  --shadow-2xs: 0px 2px 0px 0px hsl(354 85% 52% / 0.05);
-  --shadow-xs: 0px 2px 0px 0px hsl(354 85% 52% / 0.05);
-  --shadow-sm: 0px 2px 0px 0px hsl(354 85% 52% / 0.05), 0px 1px 2px -1px hsl(354 85% 52% / 0.05);
-  --shadow: 0px 2px 0px 0px hsl(354 85% 52% / 0.05), 0px 1px 2px -1px hsl(354 85% 52% / 0.05);
-  --shadow-md: 0px 2px 0px 0px hsl(354 85% 52% / 0.05), 0px 2px 4px -1px hsl(354 85% 52% / 0.05);
-  --shadow-lg: 0px 2px 0px 0px hsl(354 85% 52% / 0.05), 0px 4px 6px -1px hsl(354 85% 52% / 0.05);
-  --shadow-xl: 0px 2px 0px 0px hsl(354 85% 52% / 0.05), 0px 8px 10px -1px hsl(354 85% 52% / 0.05);
-  --shadow-2xl: 0px 2px 0px 0px hsl(354 85% 52% / 0.05);
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+  --shadow-md: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.15), 0 8px 10px -6px rgba(0, 0, 0, 0.15);
+  --shadow-xl: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+
+  --elevate-1: rgba(255, 23, 68, .04);
+  --elevate-2: rgba(255, 23, 68, .08);
   
-  --sidebar-primary-border: hsl(from hsl(var(--sidebar-primary)) h s calc(l + var(--opaque-button-border-intensity)) / alpha);
-  --sidebar-accent-border: hsl(from hsl(var(--sidebar-accent)) h s calc(l + var(--opaque-button-border-intensity)) / alpha);
-  --primary-border: hsl(from hsl(var(--primary)) h s calc(l + var(--opaque-button-border-intensity)) / alpha);
-  --secondary-border: hsl(from hsl(var(--secondary)) h s calc(l + var(--opaque-button-border-intensity)) / alpha);
-  --muted-border: hsl(from hsl(var(--muted)) h s calc(l + var(--opaque-button-border-intensity)) / alpha);
-  --accent-border: hsl(from hsl(var(--accent)) h s calc(l + var(--opaque-button-border-intensity)) / alpha);
-  --destructive-border: hsl(from hsl(var(--destructive)) h s calc(l + var(--opaque-button-border-intensity)) / alpha);
+  --primary-border: hsl(from hsl(var(--primary)) h s calc(l - 5) / alpha);
+  --secondary-border: hsl(from hsl(var(--secondary)) h s calc(l - 5) / alpha);
+  --muted-border: hsl(from hsl(var(--muted)) h s calc(l - 5) / alpha);
+  --accent-border: hsl(from hsl(var(--accent)) h s calc(l - 5) / alpha);
+  --destructive-border: hsl(from hsl(var(--destructive)) h s calc(l - 5) / alpha);
+  --sidebar-primary-border: hsl(from hsl(var(--sidebar-primary)) h s calc(l - 5) / alpha);
+  --sidebar-accent-border: hsl(from hsl(var(--sidebar-accent)) h s calc(l - 5) / alpha);
 }
 
 @layer base {
@@ -153,13 +146,75 @@
   }
   
   body {
-    @apply font-sans antialiased bg-background text-foreground;
+    @apply font-sans antialiased bg-background text-foreground overflow-x-hidden;
+    background-image: 
+      radial-gradient(circle at 50% 0%, rgba(255, 23, 68, 0.05) 0%, transparent 50%),
+      linear-gradient(to right, rgba(255, 23, 68, 0.015) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(255, 23, 68, 0.015) 1px, transparent 1px);
+    background-size: 100% 100%, 40px 40px, 40px 40px;
+    background-attachment: fixed;
   }
-  
-  /* Cyberpunk Glassmorphism Base styling */
+
+  /* Hollywood Command Panel styling */
   .glass-panel {
-    @apply bg-card/70 backdrop-blur-md border border-card-border shadow-lg;
+    @apply bg-card/65 backdrop-blur-lg border border-card-border/80 shadow-2xl transition-all duration-300;
+    box-shadow: 
+      inset 0 1px 1px 0 rgba(255, 255, 255, 0.03),
+      0 10px 30px -10px rgba(0, 0, 0, 0.5),
+      0 0 1px 1px rgba(255, 23, 68, 0.02);
   }
+
+  .glass-panel:hover {
+    @apply border-primary/20;
+    box-shadow: 
+      inset 0 1px 1px 0 rgba(255, 255, 255, 0.05),
+      0 15px 35px -10px rgba(0, 0, 0, 0.7),
+      0 0 15px 1px rgba(255, 23, 68, 0.04);
+  }
+
+  /* Scanline/Grid Sweeping overlay */
+  .cyber-scanner {
+    position: relative;
+    overflow: hidden;
+  }
+  .cyber-scanner::after {
+    content: '';
+    position: absolute;
+    top: -100%;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+      to bottom,
+      transparent 0%,
+      rgba(255, 23, 68, 0.03) 40%,
+      rgba(255, 23, 68, 0.08) 50%,
+      rgba(255, 23, 68, 0.03) 60%,
+      transparent 100%
+    );
+    animation: sweep 8s linear infinite;
+    pointer-events: none;
+    z-index: 10;
+  }
+
+  /* Neon red text glow */
+  .text-glow {
+    text-shadow: 0 0 10px rgba(255, 23, 68, 0.4), 0 0 2px rgba(255, 23, 68, 0.8);
+  }
+
+  /* Neon green text glow */
+  .text-glow-green {
+    text-shadow: 0 0 10px rgba(34, 197, 94, 0.4), 0 0 2px rgba(34, 197, 94, 0.8);
+  }
+
+  .cyber-glow-border {
+    box-shadow: 0 0 15px rgba(255, 23, 68, 0.15);
+  }
+}
+
+@keyframes sweep {
+  0% { top: -100%; }
+  100% { top: 100%; }
 }
 
 @layer utilities {
@@ -168,32 +223,5 @@
     content: attr(data-placeholder);
     color: hsl(var(--muted-foreground));
     pointer-events: none;
-  }
-  .no-default-hover-elevate {}
-  .no-default-active-elevate {}
-
-  .toggle-elevate::before, .toggle-elevate-2::before {
-    content: ""; pointer-events: none; position: absolute; inset: 0px; border-radius: inherit; z-index: -1;
-  }
-  .toggle-elevate.toggle-elevated::before { background-color: var(--elevate-2); }
-  .border.toggle-elevate::before { inset: -1px; }
-
-  .hover-elevate:not(.no-default-hover-elevate), .active-elevate:not(.no-default-active-elevate),
-  .hover-elevate-2:not(.no-default-hover-elevate), .active-elevate-2:not(.no-default-active-elevate) {
-    position: relative; z-index: 0;
-  }
-  .hover-elevate:not(.no-default-hover-elevate)::after, .active-elevate:not(.no-default-active-elevate)::after,
-  .hover-elevate-2:not(.no-default-hover-elevate)::after, .active-elevate-2:not(.no-default-active-elevate)::after {
-    content: ""; pointer-events: none; position: absolute; inset: 0px; border-radius: inherit; z-index: 999;
-  }
-  .hover-elevate:hover:not(.no-default-hover-elevate)::after, .active-elevate:active:not(.no-default-active-elevate)::after {
-    background-color: var(--elevate-1);
-  }
-  .hover-elevate-2:hover:not(.no-default-hover-elevate)::after, .active-elevate-2:active:not(.no-default-active-elevate)::after {
-    background-color: var(--elevate-2);
-  }
-  .border.hover-elevate:not(.no-hover-interaction-elevate)::after, .border.active-elevate:not(.no-active-interaction-elevate)::after,
-  .border.hover-elevate-2:not(.no-hover-interaction-elevate)::after, .border.active-elevate-2:not(.no-active-interaction-elevate)::after {
-    inset: -1px;
   }
 }
