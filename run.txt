@@ -1,0 +1,10 @@
+Running the Application Locally
+To start the application, use the following commands from the workspace root:
+
+Start the API Server:   
+
+pnpm --filter @workspace/api-server run dev
+Start the React Frontend:
+bash
+
+pnpm --filter @workspace/sentinelx run dev
