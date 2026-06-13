@@ -26,7 +26,7 @@ export function Sidebar() {
   const openIncidentsCount = (incidents ?? []).filter(i => i.status === 'open').length;
 
   return (
-    <div className="flex h-screen w-64 flex-col bg-sidebar border-r border-sidebar-border">
+    <div className="flex h-screen w-64 flex-col bg-sidebar/85 backdrop-blur-md border-r border-sidebar-border">
       <div className="flex h-16 items-center px-4 border-b border-sidebar-border">
         <Shield className="h-6 w-6 text-primary mr-2" />
         <span className="text-lg font-bold text-sidebar-foreground">SentinelX</span>
