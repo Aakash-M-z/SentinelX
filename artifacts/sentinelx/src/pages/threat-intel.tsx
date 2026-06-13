@@ -84,17 +84,17 @@ export default function ThreatIntel() {
           <TabsContent value="mitre">
              <Card className="glass-panel">
                 <CardHeader>
-                  <CardTitle>MITRE ATT&CK Coverage ({mitre?.coveragePercent.toFixed(1)}%)</CardTitle>
+                  <CardTitle>MITRE ATT&CK Coverage ({mitre?.coveragePercent ? mitre.coveragePercent.toFixed(1) : '0.0'}%)</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-4">
-                    {mitre?.tactics.map(tactic => (
+                    {(mitre?.tactics ?? []).map(tactic => (
                       <div key={tactic.id} className="border border-border/50 rounded bg-card/30 p-2">
                         <div className="text-xs font-bold uppercase border-b border-border/50 pb-2 mb-2 break-words">
                           {tactic.name}
                         </div>
                         <div className="space-y-1">
-                          {mitre.techniques.filter(t => t.tactic === tactic.id).map(tech => (
+                          {(mitre?.techniques ?? []).filter(t => t.tactic === tactic.id).map(tech => (
                             <div key={tech.id} className={`text-[10px] p-1 rounded ${tech.detected ? 'bg-primary/20 text-primary' : 'bg-secondary text-muted-foreground'}`}>
                               {tech.name}
                             </div>

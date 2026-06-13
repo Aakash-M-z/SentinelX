@@ -13,7 +13,7 @@ export default function Commander() {
   const runAnalysis = useRunCommanderAnalysis();
 
   const handleAnalyze = () => {
-    runAnalysis.mutate(undefined, {
+    runAnalysis.mutate({ data: {} }, {
       onSuccess: () => {
         queryClient.invalidateQueries({ queryKey: getGetCommanderReportQueryKey() });
         queryClient.invalidateQueries({ queryKey: getGetRiskScoreQueryKey() });

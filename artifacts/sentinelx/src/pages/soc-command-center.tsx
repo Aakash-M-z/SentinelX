@@ -7,7 +7,7 @@ import { useQueryClient } from "@tanstack/react-query";
 
 export default function SocCommandCenter() {
   const queryClient = useQueryClient();
-  const { data: simulationStatus } = useGetSimulationStatus({ query: { refetchInterval: 3000 } });
+  const { data: simulationStatus } = useGetSimulationStatus({ query: { refetchInterval: 3000 } as any });
   const { data: socSummary } = useGetSocSummary();
   const { data: metrics } = useGetSimulationMetrics();
   const { data: events } = useListSimulationEvents();
@@ -76,7 +76,7 @@ export default function SocCommandCenter() {
             <Activity className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{socSummary?.mttd ? `${socSummary.mttd}m` : '0m'}</div>
+            <div className="text-2xl font-bold">{socSummary?.meanTimeToDetect ? `${socSummary.meanTimeToDetect}m` : '0m'}</div>
           </CardContent>
         </Card>
       </div>
@@ -88,7 +88,7 @@ export default function SocCommandCenter() {
           </CardHeader>
           <CardContent className="flex-1 overflow-y-auto">
             <div className="space-y-4">
-              {events?.slice(0, 10).map((event, i) => (
+              {(events ?? []).slice(0, 10).map((event, i) => (
                 <motion.div
                   key={event.id}
                   initial={{ opacity: 0, y: 10 }}

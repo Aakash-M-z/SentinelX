@@ -22,8 +22,8 @@ export function Sidebar() {
   const { data: alerts } = useListAlerts();
   const { data: incidents } = useListIncidents();
 
-  const openAlertsCount = alerts?.filter(a => a.status === 'open').length || 0;
-  const openIncidentsCount = incidents?.filter(i => i.status === 'open').length || 0;
+  const openAlertsCount = (alerts ?? []).filter(a => a.status === 'open').length;
+  const openIncidentsCount = (incidents ?? []).filter(i => i.status === 'open').length;
 
   return (
     <div className="flex h-screen w-64 flex-col bg-sidebar border-r border-sidebar-border">

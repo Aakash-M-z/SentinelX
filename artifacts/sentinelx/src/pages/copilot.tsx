@@ -44,34 +44,34 @@ export default function Copilot() {
 
   const handleSend = () => {
     if (!message.trim() || send.isPending) return;
-    send.mutate({ data: { message: message.trim(), context } });
+    send.mutate({ data: { message: message.trim(), context: context as any } });
   };
 
   const handleSuggestion = (text: string, ctx: string) => {
     setContext(ctx);
-    send.mutate({ data: { message: text, context: ctx } });
+    send.mutate({ data: { message: text, context: ctx as any } });
   };
 
   return (
     <div className="h-full flex flex-col">
-      <div className="flex items-center justify-between p-4 border-b border-white/5">
+      <div className="flex items-center justify-between p-4 border-b border-border">
         <div className="flex items-center gap-3">
-          <div className="w-8 h-8 rounded-lg bg-cyan-500/20 border border-cyan-500/40 flex items-center justify-center">
-            <Bot size={16} className="text-cyan-400" />
+          <div className="w-8 h-8 rounded-lg bg-primary/20 border border-primary/40 flex items-center justify-center">
+            <Bot size={16} className="text-primary" />
           </div>
           <div>
-            <h1 className="text-base font-bold text-white">Security Copilot</h1>
-            <p className="text-xs text-slate-400">AI analyst with live simulation awareness</p>
+            <h1 className="text-base font-bold text-foreground">Security Copilot</h1>
+            <p className="text-xs text-muted-foreground">AI analyst with live simulation awareness</p>
           </div>
         </div>
         <div className="flex items-center gap-2">
-          <span className="text-xs text-slate-400">Context:</span>
+          <span className="text-xs text-muted-foreground">Context:</span>
           <div className="relative">
             <select
               data-testid="select-copilot-context"
               value={context}
               onChange={(e) => setContext(e.target.value)}
-              className="bg-slate-900 border border-slate-700 text-xs text-cyan-400 rounded-lg px-3 py-1.5 pr-7 focus:border-cyan-500 focus:outline-none appearance-none cursor-pointer"
+              className="bg-background border border-border text-xs text-primary rounded-lg px-3 py-1.5 pr-7 focus:border-primary focus:outline-none appearance-none cursor-pointer"
             >
               {CONTEXTS.map((c) => (
                 <option key={c.value} value={c.value}>{c.label}</option>
@@ -85,21 +85,21 @@ export default function Copilot() {
       <div className="flex-1 overflow-y-auto p-4 space-y-4">
         {(history ?? []).length === 0 && !send.isPending && (
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="flex flex-col items-center justify-center h-full min-h-[300px]">
-            <div className="w-16 h-16 rounded-2xl bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center mb-4">
-              <Bot size={28} className="text-cyan-400" />
+            <div className="w-16 h-16 rounded-2xl bg-primary/10 border border-primary/30 flex items-center justify-center mb-4">
+              <Bot size={28} className="text-primary" />
             </div>
-            <h2 className="text-lg font-semibold text-white mb-2">SentinelX Copilot</h2>
-            <p className="text-sm text-slate-400 text-center mb-6 max-w-sm">AI-powered security analyst with full situational awareness of your cyber range simulation.</p>
+            <h2 className="text-lg font-semibold text-foreground mb-2">SentinelX Copilot</h2>
+            <p className="text-sm text-muted-foreground text-center mb-6 max-w-sm">AI-powered security analyst with full situational awareness of your cyber range simulation.</p>
             <div className="grid grid-cols-2 gap-2 w-full max-w-lg">
               {SUGGESTIONS.map(({ icon: Icon, text, context: ctx }) => (
                 <button
                   key={text}
                   data-testid={`button-suggestion-${text.slice(0, 10).replace(/\s/g, "-")}`}
                   onClick={() => handleSuggestion(text, ctx)}
-                  className="flex items-center gap-2 p-3 glass-panel rounded-xl text-left hover:border-cyan-500/50 transition-all group"
+                  className="flex items-center gap-2 p-3 glass-panel rounded-xl text-left hover:border-primary/50 transition-all group"
                 >
-                  <Icon size={14} className="text-cyan-400 flex-shrink-0" />
-                  <span className="text-xs text-slate-300 group-hover:text-white transition-colors">{text}</span>
+                  <Icon size={14} className="text-primary flex-shrink-0" />
+                  <span className="text-xs text-muted-foreground group-hover:text-foreground transition-colors">{text}</span>
                 </button>
               ))}
             </div>
@@ -116,18 +116,18 @@ export default function Copilot() {
               data-testid={`message-${msg.role}-${msg.id}`}
               className={`flex gap-3 ${msg.role === "user" ? "flex-row-reverse" : ""}`}
             >
-              <div className={`w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0 ${msg.role === "user" ? "bg-slate-700 border border-slate-600" : "bg-cyan-500/20 border border-cyan-500/40"}`}>
-                {msg.role === "user" ? <User size={13} className="text-slate-300" /> : <Bot size={13} className="text-cyan-400" />}
+              <div className={`w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0 ${msg.role === "user" ? "bg-muted border border-border" : "bg-primary/20 border border-primary/40"}`}>
+                {msg.role === "user" ? <User size={13} className="text-muted-foreground" /> : <Bot size={13} className="text-primary" />}
               </div>
               <div className={`max-w-[75%] ${msg.role === "user" ? "items-end" : "items-start"} flex flex-col gap-1`}>
-                <div className={`px-4 py-3 rounded-2xl text-sm leading-relaxed ${msg.role === "user" ? "bg-slate-700/80 text-white rounded-tr-sm" : "glass-panel text-slate-200 rounded-tl-sm"}`}>
+                <div className={`px-4 py-3 rounded-2xl text-sm leading-relaxed ${msg.role === "user" ? "bg-muted text-foreground rounded-tr-sm border border-border" : "glass-panel text-foreground rounded-tl-sm"}`}>
                   <p className="whitespace-pre-wrap">{msg.content}</p>
                 </div>
                 <div className="flex items-center gap-2">
                   {msg.context && msg.context !== "general" && (
-                    <span className="text-xs text-slate-600 px-1.5 py-0.5 bg-slate-800/50 rounded">{msg.context}</span>
+                    <span className="text-xs text-muted-foreground px-1.5 py-0.5 bg-muted rounded">{msg.context}</span>
                   )}
-                  <span className="text-xs text-slate-600">{new Date(msg.timestamp).toLocaleTimeString()}</span>
+                  <span className="text-xs text-muted-foreground">{new Date(msg.timestamp).toLocaleTimeString()}</span>
                 </div>
               </div>
             </motion.div>
@@ -136,13 +136,13 @@ export default function Copilot() {
 
         {send.isPending && (
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex gap-3">
-            <div className="w-7 h-7 rounded-lg bg-cyan-500/20 border border-cyan-500/40 flex items-center justify-center">
-              <Bot size={13} className="text-cyan-400" />
+            <div className="w-7 h-7 rounded-lg bg-primary/20 border border-primary/40 flex items-center justify-center">
+              <Bot size={13} className="text-primary" />
             </div>
             <div className="glass-panel px-4 py-3 rounded-2xl rounded-tl-sm">
               <div className="flex gap-1">
                 {[0, 1, 2].map((i) => (
-                  <motion.div key={i} className="w-1.5 h-1.5 rounded-full bg-cyan-400/60" animate={{ opacity: [0.3, 1, 0.3] }} transition={{ duration: 1.2, repeat: Infinity, delay: i * 0.2 }} />
+                  <motion.div key={i} className="w-1.5 h-1.5 rounded-full bg-primary/60" animate={{ opacity: [0.3, 1, 0.3] }} transition={{ duration: 1.2, repeat: Infinity, delay: i * 0.2 }} />
                 ))}
               </div>
             </div>
@@ -151,7 +151,7 @@ export default function Copilot() {
         <div ref={bottomRef} />
       </div>
 
-      <div className="p-4 border-t border-white/5">
+      <div className="p-4 border-t border-border">
         <div className="flex gap-3">
           <input
             data-testid="input-copilot-message"
@@ -159,18 +159,18 @@ export default function Copilot() {
             onChange={(e) => setMessage(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && !e.shiftKey && handleSend()}
             placeholder="Ask about threats, incidents, attack chains..."
-            className="flex-1 bg-slate-900/80 border border-slate-700 rounded-xl px-4 py-3 text-sm text-white placeholder-slate-500 focus:border-cyan-500 focus:outline-none focus:bg-slate-900 transition-all"
+            className="flex-1 bg-background border border-border rounded-xl px-4 py-3 text-sm text-foreground placeholder-muted-foreground focus:border-primary focus:outline-none focus:bg-background transition-all"
           />
           <button
             data-testid="button-send-message"
             onClick={handleSend}
             disabled={!message.trim() || send.isPending}
-            className="px-4 py-3 bg-cyan-500/20 border border-cyan-500/50 text-cyan-400 rounded-xl hover:bg-cyan-500/30 disabled:opacity-40 transition-all"
+            className="px-4 py-3 bg-primary/20 border border-primary/50 text-primary rounded-xl hover:bg-primary/30 disabled:opacity-40 transition-all"
           >
             <Send size={16} />
           </button>
         </div>
-        <p className="text-xs text-slate-600 mt-2 text-center">AI responses are generated based on live simulation data</p>
+        <p className="text-xs text-muted-foreground mt-2 text-center">AI responses are generated based on live simulation data</p>
       </div>
     </div>
   );

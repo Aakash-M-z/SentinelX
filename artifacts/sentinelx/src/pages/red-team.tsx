@@ -8,9 +8,9 @@ import { Badge } from "@/components/ui/badge";
 
 export default function RedTeam() {
   const queryClient = useQueryClient();
-  const { data: status, isLoading: statusLoading } = useGetRedTeamStatus({ query: { refetchInterval: 3000 } });
-  const { data: attacks, isLoading: attacksLoading } = useListAttacks({ query: { refetchInterval: 3000 } });
-  const { data: findings, isLoading: findingsLoading } = useListRedTeamFindings({ query: { refetchInterval: 3000 } });
+  const { data: status, isLoading: statusLoading } = useGetRedTeamStatus({ query: { refetchInterval: 3000 } as any });
+  const { data: attacks, isLoading: attacksLoading } = useListAttacks({ query: { refetchInterval: 3000 } as any });
+  const { data: findings, isLoading: findingsLoading } = useListRedTeamFindings({ query: { refetchInterval: 3000 } as any });
   const executeStep = useExecuteRedTeamStep();
 
   const handleNextStep = () => {

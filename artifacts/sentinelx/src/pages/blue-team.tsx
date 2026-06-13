@@ -8,10 +8,10 @@ import { Badge } from "@/components/ui/badge";
 
 export default function BlueTeam() {
   const queryClient = useQueryClient();
-  const { data: status } = useGetBlueTeamStatus({ query: { refetchInterval: 3000 } });
-  const { data: alerts } = useListAlerts({ query: { refetchInterval: 3000 } });
-  const { data: detections } = useListDetections({ query: { refetchInterval: 3000 } });
-  const { data: rules } = useListFirewallRules({ query: { refetchInterval: 3000 } });
+  const { data: status } = useGetBlueTeamStatus({ query: { refetchInterval: 3000 } as any });
+  const { data: alerts } = useListAlerts({ query: { refetchInterval: 3000 } as any });
+  const { data: detections } = useListDetections({ query: { refetchInterval: 3000 } as any });
+  const { data: rules } = useListFirewallRules({ query: { refetchInterval: 3000 } as any });
 
   const executeStep = useExecuteBlueTeamStep();
   const ackAlert = useAcknowledgeAlert();
