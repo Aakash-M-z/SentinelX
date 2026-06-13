@@ -7,8 +7,14 @@ import { chatText } from "../lib/openai";
 const router: IRouter = Router();
 
 router.get("/copilot/history", async (req, res): Promise<void> => {
+  res.set("Cache-Control", "no-store, no-cache, must-revalidate, private");
   const messages = await db.select().from(copilotMessagesTable).orderBy(copilotMessagesTable.timestamp).limit(100);
   res.json(messages.map((m) => ({ ...m, context: m.context ?? null, timestamp: m.timestamp.toISOString() })));
+});
+
+router.delete("/copilot/history", async (req, res): Promise<void> => {
+  await db.delete(copilotMessagesTable);
+  res.json({ success: true });
 });
 
 router.post("/copilot/chat", async (req, res): Promise<void> => {
